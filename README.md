@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="logo.webp" alt="VMusic Logo" width="120"/>
+  <img src="logo_readme.webp" alt="VMusic Logo" width="120"/>
   <h1>VMusic</h1>
 </div>
 
