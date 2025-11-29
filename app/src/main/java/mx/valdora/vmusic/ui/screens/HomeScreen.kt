@@ -4,14 +4,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
 import mx.valdora.vmusic.data.database.VMusicDatabase
 import mx.valdora.vmusic.data.repository.MediaStoreRepository
@@ -35,7 +36,7 @@ fun HomeScreen(navController: NavController, permissionGranted: Boolean) {
     val artists by artistsViewModel.artists.collectAsState()
     val playlists by playlistsViewModel.playlists.collectAsState()
     
-    var isRefreshing by remember { mutableStateOf(false) }
+    val pullToRefreshState = rememberPullToRefreshState()
     val coroutineScope = rememberCoroutineScope()
     
     LaunchedEffect(permissionGranted) {
@@ -47,26 +48,26 @@ fun HomeScreen(navController: NavController, permissionGranted: Boolean) {
         }
     }
     
+    if (pullToRefreshState.isRefreshing) {
+        LaunchedEffect(true) {
+            songsViewModel.loadSongs()
+            albumsViewModel.loadAlbums()
+            artistsViewModel.loadArtists()
+            playlistsViewModel.loadPlaylists()
+            pullToRefreshState.endRefresh()
+        }
+    }
+    
     Scaffold(
         topBar = {
             AppTopBar(title = "VMusic", centered = true)
         }
     ) { padding ->
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing),
-            onRefresh = {
-                coroutineScope.launch {
-                    isRefreshing = true
-                    songsViewModel.loadSongs()
-                    albumsViewModel.loadAlbums()
-                    artistsViewModel.loadArtists()
-                    playlistsViewModel.loadPlaylists()
-                    isRefreshing = false
-                }
-            },
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
@@ -119,6 +120,11 @@ fun HomeScreen(navController: NavController, permissionGranted: Boolean) {
                     HorizontalDivider()
                 }
             }
+            
+            PullToRefreshContainer(
+                state = pullToRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
         }
     }
 }
