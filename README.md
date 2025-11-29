@@ -1,4 +1,7 @@
-# VMusic
+<div align="center">
+  <img src="logo.webp" alt="VMusic Logo" width="120"/>
+  <h1>VMusic</h1>
+</div>
 
 A modern, feature-rich music player for Android built with the latest Android technologies. VMusic provides a smooth and intuitive experience for managing and playing your local music library.
 
