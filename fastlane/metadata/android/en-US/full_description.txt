@@ -1,0 +1,7 @@
+VMusic is a modern music player for Android built with Material Design 3 and Jetpack Compose.
+
+Features:
+• Local music playback
+• Clean and modern user interface
+• Material Design 3
+• Built with Jetpack Compose
