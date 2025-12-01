@@ -2,24 +2,28 @@ package mx.valdora.vmusic.ui.theme
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-
-private val DarkColorScheme = darkColorScheme(
-    primary = AccentPink,
-    secondary = AccentTeal,
-    background = Black,
-    surface = Black,
-    surfaceVariant = MediumGray,
-    onPrimary = White,
-    onSecondary = Black,
-    onBackground = White,
-    onSurface = White,
-    onSurfaceVariant = White
-)
+import androidx.compose.ui.graphics.Color
 
 @Composable
-fun VMusicTheme(content: @Composable () -> Unit) {
+fun VMusicTheme(
+    accentColor: Color = AccentPink,
+    content: @Composable () -> Unit
+) {
+    val colorScheme = darkColorScheme(
+        primary = accentColor,
+        secondary = AccentTeal,
+        background = Black,
+        surface = Black,
+        surfaceVariant = MediumGray,
+        onPrimary = White,
+        onSecondary = Black,
+        onBackground = White,
+        onSurface = White,
+        onSurfaceVariant = White
+    )
+    
     MaterialTheme(
-        colorScheme = DarkColorScheme,
+        colorScheme = colorScheme,
         content = content
     )
 }
