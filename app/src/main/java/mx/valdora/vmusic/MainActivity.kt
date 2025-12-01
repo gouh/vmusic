@@ -28,9 +28,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import mx.valdora.vmusic.ui.theme.VMusicTheme
+import mx.valdora.vmusic.ui.theme.AccentColors
 import mx.valdora.vmusic.ui.screens.*
 import mx.valdora.vmusic.ui.viewmodel.PlayerViewModel
 import mx.valdora.vmusic.ui.viewmodel.SearchViewModel
+import mx.valdora.vmusic.ui.viewmodel.SettingsViewModel
 import mx.valdora.vmusic.ui.components.MiniPlayer
 import mx.valdora.vmusic.ui.components.SearchButton
 import mx.valdora.vmusic.ui.components.SongsListState
@@ -48,6 +50,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
+        window.navigationBarColor = android.graphics.Color.BLACK
+        
         val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             Manifest.permission.READ_MEDIA_AUDIO
         } else {
@@ -61,10 +65,13 @@ class MainActivity : ComponentActivity() {
         }
         
         setContent {
-            VMusicTheme {
+            val settingsViewModel: SettingsViewModel = viewModel()
+            val accentColorIndex by settingsViewModel.accentColorIndex.collectAsState()
+            
+            VMusicTheme(accentColor = AccentColors[accentColorIndex]) {
                 androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    AppNavigation(permissionGranted)
+                    AppNavigation(permissionGranted, settingsViewModel)
                 }
             }
         }
@@ -72,7 +79,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppNavigation(permissionGranted: Boolean) {
+fun AppNavigation(permissionGranted: Boolean, settingsViewModel: SettingsViewModel) {
     val navController = rememberNavController()
     val activity = LocalContext.current as ComponentActivity
     val playerViewModel: PlayerViewModel = viewModel(viewModelStoreOwner = activity)
@@ -104,14 +111,10 @@ fun AppNavigation(permissionGranted: Boolean) {
     }
     
     Box(modifier = Modifier.fillMaxSize()) {
-        Scaffold(
-            bottomBar = {},
-            contentWindowInsets = WindowInsets(0, 0, 0, 0)
-        ) { padding ->
-            NavHost(
-                navController = navController, 
-                startDestination = "home",
-                modifier = Modifier.padding(padding),
+        NavHost(
+            navController = navController, 
+            startDestination = "home",
+            modifier = Modifier.fillMaxSize(),
                 enterTransition = { 
                     slideIntoContainer(
                         towards = AnimatedContentTransitionScope.SlideDirection.Left,
@@ -157,14 +160,14 @@ fun AppNavigation(permissionGranted: Boolean) {
                 }
                 composable("favorites") { FavoritesScreen(navController, playerViewModel, searchState) }
                 composable("recents") { RecentsScreen(navController, playerViewModel, searchState) }
+                composable("settings") { SettingsScreen(navController, settingsViewModel) }
             }
-        }
-        
         // Sticky bottom bar con MiniPlayer y SearchButton
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
+                .navigationBarsPadding()
                 .imePadding()
                 .padding(bottom = 10.dp)
         ) {

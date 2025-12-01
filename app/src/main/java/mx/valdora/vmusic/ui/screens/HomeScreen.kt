@@ -60,7 +60,15 @@ fun HomeScreen(navController: NavController, permissionGranted: Boolean) {
     
     Scaffold(
         topBar = {
-            AppTopBar(title = "VMusic", centered = true)
+            AppTopBar(
+                title = "VMusic",
+                centered = true,
+                actions = {
+                    IconButton(onClick = { navController.navigate("settings") }) {
+                        Icon(AppIcons.MoreVert, "Ajustes")
+                    }
+                }
+            )
         }
     ) { padding ->
         Box(

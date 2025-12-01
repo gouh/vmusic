@@ -17,6 +17,7 @@ fun AppTopBar(
     if (centered) {
         CenterAlignedTopAppBar(
             title = { Text(title) },
+            actions = actions,
             windowInsets = WindowInsets.statusBars,
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor = MaterialTheme.colorScheme.background
