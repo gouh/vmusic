@@ -26,6 +26,7 @@ object AppIcons {
     val Forward10: ImageVector = Icons.Outlined.Forward10
     val Shuffle: ImageVector = Icons.Outlined.Shuffle
     val Repeat: ImageVector = Icons.Outlined.Repeat
+    val RepeatOne: ImageVector = Icons.Outlined.RepeatOne
     val VolumeUp: ImageVector = Icons.AutoMirrored.Outlined.VolumeUp
 
     // Album
@@ -63,4 +64,5 @@ object AppIcons {
     val Share: ImageVector = Icons.Outlined.Share
     val Folder: ImageVector = Icons.Outlined.Folder
     val Refresh: ImageVector = Icons.Outlined.Refresh
+    val Palette: ImageVector = Icons.Outlined.Palette
 }
