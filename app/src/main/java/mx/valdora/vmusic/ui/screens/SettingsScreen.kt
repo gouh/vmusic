@@ -115,9 +115,10 @@ fun SettingsScreen(
             }
             
             item {
+                val iconNames = listOf("Predeterminado", "Blanco", "Negro")
                 ListItem(
-                    headlineContent = { Text("Icono de la aplicación") },
-                    supportingContent = { Text("Cambia el icono de VMusic") },
+                    headlineContent = { Text("Icono de la app") },
+                    supportingContent = { Text(iconNames[appIconIndex]) },
                     leadingContent = { Icon(AppIcons.Palette, null) },
                     trailingContent = { Icon(AppIcons.ChevronRight, null) },
                     modifier = Modifier.clickable { showIconPicker = true }
@@ -289,72 +290,78 @@ fun IconPickerDialog(
     onIconSelected: (Int) -> Unit,
     onDismiss: () -> Unit
 ) {
-    var previewIndex by remember { mutableIntStateOf(selectedIndex) }
+    var tempSelectedIndex by remember { mutableIntStateOf(selectedIndex) }
     
-    val iconNames = listOf("Rosa (Predeterminado)", "Blanco", "Negro")
-    val iconColors = listOf(
-        Color(0xFFFF4081),
-        Color.White,
-        Color.Black
+    val iconOptions = listOf(
+        Triple("Predeterminado", "ic_launcher", 0xFFE91E63),
+        Triple("Blanco", "ic_launcher_alt_white", 0xFFFFFFFF),
+        Triple("Negro", "ic_launcher_alt_black", 0xFF000000)
     )
     
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Selecciona un icono") },
+        title = { Text("Selecciona el icono") },
         text = {
             Column {
-                iconNames.forEachIndexed { index, name ->
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        color = if (index == previewIndex) 
-                            MaterialTheme.colorScheme.primaryContainer 
-                        else 
-                            MaterialTheme.colorScheme.surfaceVariant,
-                        onClick = { previewIndex = index }
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    iconOptions.forEachIndexed { index, (name, _, bgColor) ->
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .clickable { tempSelectedIndex = index }
+                                .padding(8.dp)
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(48.dp)
-                                    .clip(CircleShape)
-                                    .background(iconColors[index])
-                                    .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
+                                    .size(64.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(Color(bgColor))
+                                    .border(
+                                        width = if (index == tempSelectedIndex) 3.dp else 1.dp,
+                                        color = if (index == tempSelectedIndex) 
+                                            MaterialTheme.colorScheme.primary 
+                                        else 
+                                            MaterialTheme.colorScheme.outline,
+                                        shape = RoundedCornerShape(16.dp)
+                                    ),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Icon(
-                                    AppIcons.MusicNote,
-                                    contentDescription = null,
-                                    tint = if (index == 1) Color.Black else Color.White,
-                                    modifier = Modifier.size(24.dp)
-                                )
+                                if (index == tempSelectedIndex) {
+                                    Icon(
+                                        Icons.Default.Check,
+                                        contentDescription = null,
+                                        tint = if (index == 2) Color.White else MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(32.dp)
+                                    )
+                                }
                             }
+                            Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 name,
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.weight(1f)
+                                style = MaterialTheme.typography.bodySmall,
+                                color = if (index == tempSelectedIndex) 
+                                    MaterialTheme.colorScheme.primary 
+                                else 
+                                    MaterialTheme.colorScheme.onSurface
                             )
-                            if (index == previewIndex) {
-                                Icon(
-                                    Icons.Default.Check,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
                         }
                     }
                 }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    "El icono cambiará después de cerrar la app",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         },
         confirmButton = {
             TextButton(onClick = { 
-                onIconSelected(previewIndex)
+                onIconSelected(tempSelectedIndex)
             }) {
                 Text("Aceptar")
             }
