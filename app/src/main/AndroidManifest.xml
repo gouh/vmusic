@@ -24,7 +24,6 @@
             android:theme="@style/Theme.VMusic">
         </activity>
         
-        <!-- Icono por defecto (rosa) -->
         <activity-alias
             android:name=".MainActivityDefault"
             android:enabled="true"
@@ -37,8 +36,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
-
-        <!-- Icono blanco -->
+        
         <activity-alias
             android:name=".MainActivityWhite"
             android:enabled="false"
@@ -51,8 +49,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
-
-        <!-- Icono negro -->
+        
         <activity-alias
             android:name=".MainActivityBlack"
             android:enabled="false"
