@@ -87,35 +87,13 @@ fun PlayerScreen(onDismiss: () -> Unit, viewModel: PlayerViewModel) {
                 .graphicsLayer {
                     translationY = offsetY.value
                 }
-                .pointerInput(Unit) {
-                    detectDragGestures(
-                        onDrag = { change, dragAmount ->
-                            change.consume()
-                            val (x, y) = dragAmount
-                            
-                            if (abs(y) > abs(x) && y > 0) {
-                                scope.launch {
-                                    offsetY.snapTo((offsetY.value + y).coerceAtLeast(0f))
-                                }
-                            }
-                        },
-                        onDragEnd = {
-                            if (offsetY.value > 200) {
-                                closePlayer()
-                            } else {
-                                scope.launch {
-                                    offsetY.animateTo(0f, animationSpec = tween(150))
-                                }
-                            }
-                        }
-                    )
-                }
         ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp)
-                .padding(top = 40.dp),
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
@@ -137,9 +115,11 @@ fun PlayerScreen(onDismiss: () -> Unit, viewModel: PlayerViewModel) {
                                 totalDragX += x
                                 totalDragY += y
                                 
-                                if (abs(totalDragY) > abs(totalDragX) && y > 0) {
-                                    scope.launch {
-                                        offsetY.snapTo((offsetY.value + y).coerceAtLeast(0f))
+                                if (abs(totalDragY) > abs(totalDragX)) {
+                                    if (y > 0) {
+                                        scope.launch {
+                                            offsetY.snapTo((offsetY.value + y).coerceAtLeast(0f))
+                                        }
                                     }
                                 }
                             },
@@ -249,7 +229,10 @@ fun PlayerScreen(onDismiss: () -> Unit, viewModel: PlayerViewModel) {
                 }
                 IconButton(onClick = { viewModel.toggleRepeat() }) {
                     Icon(
-                        AppIcons.Repeat,
+                        when (repeatMode) {
+                            RepeatMode.ONE -> AppIcons.RepeatOne
+                            else -> AppIcons.Repeat
+                        },
                         "Repeat",
                         tint = if (repeatMode != RepeatMode.OFF) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                     )
@@ -278,7 +261,8 @@ fun PlayerScreen(onDismiss: () -> Unit, viewModel: PlayerViewModel) {
             onClick = { closePlayer() },
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 40.dp, end = 24.dp)
+                .statusBarsPadding()
+                .padding(end = 24.dp)
         ) {
             Icon(AppIcons.ExpandMore, "Cerrar")
         }
