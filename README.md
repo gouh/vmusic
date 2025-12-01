@@ -40,6 +40,11 @@ VMusic is designed to be a lightweight yet powerful music player that focuses on
 - Sort alphabetically (A-Z, Z-A)
 - Available across all library sections
 
+### Customization
+- **Dynamic Theming**: Choose from 10 accent colors to personalize the app
+- **App Icon Variants**: Switch between 3 launcher icons (Default, White, Black)
+- **Media Library Rescan**: Manually refresh your music library
+
 ### Technical Stack
 
 **Architecture & UI**
